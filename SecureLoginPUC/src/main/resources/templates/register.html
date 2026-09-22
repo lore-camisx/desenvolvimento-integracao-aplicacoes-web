@@ -1,0 +1,138 @@
+<!doctype html>
+<!-- =========================================================
+     RESUMO DA PAGINA
+     Cadastro com dados pessoais, campus e senha.
+
+     MAPA VISUAL:
+     body -> .register-container -> logo, titulo, form,
+         mensagens condicionais e link para login.
+
+     LIMITACAO: sem CSS, estudamos estrutura, dados enviados e
+     validacao nativa; tamanho e posicionamento dependem do CSS.
+     ========================================================= -->
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Cadastro - PUC Minas</title>
+
+    <!-- Fonte Montserrat - Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Conecta o HTML ao CSS; as regras visuais ficam para outra etapa. -->
+    <link rel="stylesheet" th:href="@{/css/register.css}" />
+  </head>
+
+  <body>
+    <!-- CLASSE register-form: identifica a area visual do cadastro. -->
+    <div class="register-form">
+      <!-- CLASSE register-image-logo-container: agrupa o logo. -->
+      <div class="register-image-logo-container">
+        <img th:src="@{/images/logo-puc.png}" alt="Logo PUC Minas" />
+      </div>
+
+      <!-- CLASSE register-titll: identifica o titulo; o nome parece ter erro de digitacao. -->
+      <h2 class="register-titll">Crie sua conta</h2>
+      <!-- form envia os dados para /register por POST. Cada name vira dado enviado ao servidor. -->
+      <form th:action="@{/register}" method="post">
+        <input
+          type="text"
+          name="nome"
+          id="nome"
+          placeholder="Nome completo"
+          autocomplete="name"
+          required
+        />
+        <input
+          type="email"
+          name="email"
+          id="email"
+          placeholder="E-mail"
+          autocomplete="email"
+          required
+        />
+        <input type="text" name="cpf" id="cpf" placeholder="CPF" required />
+        <input type="text" name="rg" id="rg" placeholder="RG" required />
+        <input
+          type="text"
+          name="instituicao"
+          id="endereco"
+          placeholder="Endereço"
+          autocomplete="street-address"
+          required
+        />
+        <!-- label associa o texto ao select por for="campus". -->
+        <label for="campus">Campus:</label>
+        <!-- select oferece opcoes; value e o valor enviado. -->
+        <select id="campus" name="campus" required>
+          <option value="" selected disabled>Selecione o campus</option>
+          <option value="barreiro">Barreiro</option>
+          <option value="coracao-eucaristico">Coração Eucarístico</option>
+          <option value="lourdes">Lourdes</option>
+          <option value="praca-da-liberdade">Praça da Liberdade</option>
+          <option value="sao-gabriel">São Gabriel</option>
+          <option value="betim">Betim</option>
+          <option value="contagem">Contagem</option>
+          <option value="pocos-de-caldas">Poços de Caldas</option>
+        </select>
+        <!-- password oculta caracteres; minlength, pattern e required validam no navegador. -->
+        <input
+          type="password"
+          name="senha"
+          id="password"
+          placeholder="Senha"
+          autocomplete="new-password"
+          minlength="8"
+          pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}"
+          title="A senha deve ter pelo menos 8 caracteres, uma letra maiúscula, uma letra minúscula, um número e um símbolo"
+          required
+        />
+        <input
+          type="password"
+          name="confirmarSenha"
+          id="confirmarSenha"
+          placeholder="Confirmar senha"
+          autocomplete="new-password"
+          minlength="8"
+          required
+        />
+        <!-- small exibe uma orientacao sobre a senha. -->
+        <small>
+          A senha deve ter pelo menos 8 caracteres, uma letra maiúscula, uma
+          letra minúscula, um número e um símbolo.
+        </small>
+        <!-- CLASSE register-button-container: agrupa o botao submit. -->
+        <div class="register-button-container">
+          <button type="submit">Registrar</button>
+        </div>
+      </form>
+      <!-- Duas classes no elemento: register-message e error-message. th:if controla a exibicao. -->
+      <div class="register-message error-message" th:if="${param.erro != null}">
+        <strong>Usuário já foi cadastrado!</strong>
+        <span>Este e-mail já possui uma conta vinculada.</span>
+      </div>
+      <!-- ATENCAO: sucess-message parece grafia incompleta de success-message; preservada. -->
+      <div
+        class="register-message sucess-message"
+        th:if="${param.sucess != null}"
+      >
+        <strong>Cadastro realizado com sucesso!</strong>
+        <span>Sua conta foi criada. Volte e faça seu login.</span>
+      </div>
+
+      <!-- CLASSE register-redirect-options: agrupa o link de retorno ao login. -->
+      <div class="register-redirect-options">
+        Já possui conta? <a th:href="@{/login}">Faça login</a>
+      </div>
+
+      <!-- Fecha a area visual do formulario depois de todos os seus conteudos. -->
+    </div>
+  </body>
+</html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<!-- =========================================================
+  RESUMO DA PAGINA
+  Exibe uma mensagem de erro e oferece links para login ou
+  recuperacao de senha.
+
+  MAPA VISUAL:
+  body -> .error-container -> logo
+    -> .error-form -> titulo, mensagem e links.
+
+  LIMITACAO: a estrutura e as condicoes Thymeleaf sao claras;
+  cores, espacamento e posicao dependem de error.css.
+  ========================================================= -->
+
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Erro - PUC Minas</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Conecta o HTML ao CSS; os estilos serao estudados depois. -->
+    <link rel="stylesheet" th:href="@{/css/error.css}" />
+  </head>
+
+  <body>
+    <!-- CLASSE error-container: agrupa a area do logo. -->
+    <div class="error-container">
+      <div class="error-image-logo-container">
+        <img th:src="@{/images/logo-puc.png}" alt="Logo PUC Minas" />
+      </div>
+
+      <!-- CLASSE error-form: agrupa o conteudo do erro. -->
+      <div class="error-form">
+        <!-- CLASSE error-title: identifica o titulo; h4 e titulo de nivel 4. -->
+        <h4 class="error-title">Erro</h4>
+
+        <!-- CLASSE error-message: agrupa a mensagem. -->
+        <div class="error-message">
+          <!-- th:if seleciona mensagem do servidor ou mensagem padrao. -->
+          <strong th:if="${erro != null}" th:text="${erro}">
+            Ocorreu um erro.
+          </strong>
+
+          <span th:if="${erro == null}">
+            Ocorreu um erro durante a operação.
+          </span>
+        </div>
+
+        <!-- CLASSE error-redirect-options: agrupa links de navegacao. -->
+        <p class="error-redirect-options">
+          <a th:href="@{/login}"> Voltar para o login </a>
+
+          <span> | </span>
+
+          <a th:href="@{/recoverpassword}"> Recuperar senha </a>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

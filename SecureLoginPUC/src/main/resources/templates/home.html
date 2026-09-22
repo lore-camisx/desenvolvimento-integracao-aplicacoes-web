@@ -1,0 +1,70 @@
+<!doctype html>
+<!-- =========================================================
+  RESUMO DA PAGINA
+  Pagina exibida apos o login: saudacao, usuario autenticado
+  e botao para sair.
+
+  MAPA VISUAL:
+  body -> .home-logo -> img
+    -> .home-content -> label, h1, mensagens, divisor,
+       usuario e form de logout.
+
+  LIMITACAO: as classes indicam pontos de estilo, mas o visual
+  exato depende de home.css.
+  ========================================================= -->
+
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Home - PUC Minas</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Conecta a estrutura ao CSS; o CSS sera estudado depois. -->
+    <link rel="stylesheet" th:href="@{/css/home.css}" />
+  </head>
+
+  <body>
+    <!-- CLASSE home-logo: agrupa o logo. -->
+    <div class="home-logo">
+      <img th:src="@{/images/logo-puc.png}" alt="Logo PUC Minas" />
+    </div>
+
+    <!-- CLASSE home-content: agrupa o conteudo principal. -->
+    <div class="home-content">
+      <span class="home-label"> PUC MINAS </span>
+
+      <!-- h1 e o titulo principal da pagina. -->
+      <h1>Bem-vindo!</h1>
+
+      <p class="home-message">Login realizado com sucesso.</p>
+
+      <!-- CLASSE home-divider: representa uma divisao visual definida pelo CSS. -->
+      <div class="home-divider"></div>
+
+      <p class="home-description">
+        Usuário:
+
+        <!-- th:text insere no HTML o usuario fornecido pelo servidor. -->
+        <strong th:text="${usuario}"></strong>
+      </p>
+
+      <p class="home-description">Você está autenticado no sistema.</p>
+
+      <!-- form POST envia a solicitacao de logout. -->
+      <form th:action="@{/logout}" method="post">
+        <!-- CLASSE home-btn: identifica o botao de saida para o CSS. -->
+        <button type="submit" class="home-btn">Sair</button>
+      </form>
+    </div>
+  </body>
+</html>

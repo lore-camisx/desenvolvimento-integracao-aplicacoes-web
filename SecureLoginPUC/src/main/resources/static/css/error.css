@@ -1,0 +1,68 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    display: grid;
+    place-items: center;
+    padding: clamp(1rem, 4vw, 3.5rem);
+    color: #17212b;
+    font-family: "Montserrat", sans-serif;
+    background: linear-gradient(rgba(248, 247, 241, .78), rgba(248, 247, 241, .78)), url("../images/fundo.png") center / cover no-repeat fixed;
+}
+
+.error-container,
+.error-form {
+    width: min(100%, 520px);
+    text-align: center;
+}
+
+.error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .75rem;
+}
+
+.error-image-logo-container img {
+    display: block;
+    width: 7.5rem;
+}
+
+.error-form {
+    padding: clamp(2rem, 6vw, 3.5rem);
+    border-radius: 1.4rem;
+    background: rgba(255, 255, 255, .9);
+    box-shadow: 0 1.25rem 2.5rem rgba(48, 42, 31, .15);
+}
+
+.error-title {
+    margin: 0 0 1rem;
+    color: #991b1b;
+    color: #111820;
+    font-size: 1.7rem;
+}
+
+.error-message {
+    color: #637381;
+    line-height: 1.6;
+}
+
+.error-redirect-options {
+    margin: 2rem 0 0;
+    font-size: .85rem;
+    line-height: 2;
+}
+
+.error-redirect-options a {
+    color: #166534;
+    font-weight: 700;
+}
+
+@media (max-width: 520px) {
+    .error-image-logo-container img {
+        width: 6.25rem;
+    }
+}

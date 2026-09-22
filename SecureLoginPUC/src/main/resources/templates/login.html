@@ -1,0 +1,109 @@
+<!doctype html>
+<!-- =========================================================
+  RESUMO DA PAGINA
+  Tela de autenticacao: logo, usuario, senha, reCAPTCHA,
+  botao Entrar e links para cadastro/recuperacao.
+
+  MAPA VISUAL:
+  body -> .login-container
+        -> .login-image-logo-container -> img
+        -> .login-form -> form.login-form-content
+        -> titulo, mensagens, inputs, reCAPTCHA, botao e links
+
+  LIMITACAO: estas anotacoes explicam HTML e Thymeleaf.
+  O resultado visual exato depende de login.css.
+  ========================================================= -->
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Login - PUC Minas</title>
+
+    <!-- A fonte e carregada externamente; seu uso visual depende do CSS. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Liga este documento ao CSS; o CSS sera estudado depois. -->
+    <link rel="stylesheet" th:href="@{/css/login.css}" />
+  </head>
+
+  <body>
+    <!-- body contem o conteudo que o usuario utiliza. -->
+    <!-- CLASSE login-container: agrupa a tela inteira de login. -->
+    <div class="login-container">
+      <!-- CLASSE login-form: identifica a area do formulario. -->
+      <div class="login-form">
+        <!-- form envia os campos para /login usando POST. -->
+        <!-- CLASSE login-form-content: identifica este formulario para o CSS. -->
+        <form th:action="@{/login}" method="post" class="login-form-content">
+          <!-- CLASSE login-image-logo-container: agrupa o logo. -->
+          <div class="login-image-logo-container">
+            <!-- img exibe a imagem; alt e o texto alternativo acessivel. -->
+            <img th:src="@{/images/logo-puc.png}" alt="Logo PUC Minas" />
+          </div>
+
+          <!-- CLASSE login-title: identifica o titulo da tela. -->
+          <h4 class="login-title">Login</h4>
+
+          <!-- th:id e processado pelo Thymeleaf; classe identifica a mensagem. -->
+          <div th:if="${param.cadastro != null}" class="login-message">
+            <strong> Cadastro realizadp com sucesso! </strong>
+
+            <span> Agora você já pode fazer login. </span>
+          </div>
+
+          <!-- th:if mostra o erro somente quando o parametro captcha existe. -->
+          <div th:if="${param.captcha}" class="login-error">
+            Por favor, confirme que você não é um robô.
+          </div>
+
+          <div th:if="${param.error}" class="login-error">
+            Usuário ou senha inválidos.
+          </div>
+
+          <!-- input text recebe o usuario; required impede envio vazio no navegador. -->
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Username"
+            autocomplete="username"
+            required
+          />
+          <!-- password oculta os caracteres digitados. -->
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Senha"
+            autocomplete="current-password"
+            required
+          />
+
+          <!-- CLASSE login-button-container: agrupa o botao de envio. -->
+          <div class="login-button-container">
+            <button type="submit">Entrar</button>
+          </div>
+
+          <!-- CLASSE login-redirect-options: agrupa links para outros fluxos. -->
+          <p class="login-redirect-options">
+            Ainda não tem cadastro?
+            <br />
+            <a href="/register"> Cadastre-se </a>
+
+            <span>|</span>
+
+            <a href="/recoverpassword"> Esqueceu sua senha? </a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
