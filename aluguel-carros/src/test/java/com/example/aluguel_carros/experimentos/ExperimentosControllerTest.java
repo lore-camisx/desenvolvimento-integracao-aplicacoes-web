@@ -1,5 +1,7 @@
 package com.example.aluguel_carros.experimentos;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@WithMockUser
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -65,12 +68,12 @@ class ExperimentosControllerTest {
 
     @Test
     void ecoUsaOCorpoRecebido() throws Exception {
-        mockMvc.perform(post("/experimentos/eco")
+        mockMvc.perform(post("/experimentos/eco").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"texto\":\"teste\"}"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"texto\":\"teste\",\"tamanho\":5}"));
-        mockMvc.perform(post("/experimentos/eco")
+        mockMvc.perform(post("/experimentos/eco").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"texto\":\"spring\"}"))
                 .andExpect(status().isOk())
@@ -79,7 +82,7 @@ class ExperimentosControllerTest {
 
     @Test
     void ecoComJsonMalformadoRetorna400() throws Exception {
-        mockMvc.perform(post("/experimentos/eco")
+        mockMvc.perform(post("/experimentos/eco").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"texto\":"))
                 .andExpect(status().isBadRequest())
@@ -120,7 +123,7 @@ class ExperimentosControllerTest {
     }
 
     private ResultActions postarEco(String corpo) throws Exception {
-        return mockMvc.perform(post("/experimentos/eco")
+        return mockMvc.perform(post("/experimentos/eco").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(corpo));
     }
