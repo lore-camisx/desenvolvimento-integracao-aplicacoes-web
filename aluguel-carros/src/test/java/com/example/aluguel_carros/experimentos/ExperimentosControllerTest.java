@@ -5,8 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -76,7 +80,47 @@ class ExperimentosControllerTest {
         mockMvc.perform(post("/experimentos/eco")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"texto\":"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertInstanceOf(
+                        HttpMessageNotReadableException.class, result.getResolvedException()));
+    }
+
+    @Test
+    void ecoSemCampoTextoViolaValidacao() throws Exception {
+        postarEco("{}")
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertInstanceOf(
+                        MethodArgumentNotValidException.class, result.getResolvedException()));
+    }
+
+    @Test
+    void ecoComTextoNuloViolaValidacao() throws Exception {
+        postarEco("{\"texto\":null}")
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertInstanceOf(
+                        MethodArgumentNotValidException.class, result.getResolvedException()));
+    }
+
+    @Test
+    void ecoComTextoVazioViolaValidacao() throws Exception {
+        postarEco("{\"texto\":\"\"}")
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertInstanceOf(
+                        MethodArgumentNotValidException.class, result.getResolvedException()));
+    }
+
+    @Test
+    void ecoComApenasEspacosViolaValidacao() throws Exception {
+        postarEco("{\"texto\":\"   \"}")
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertInstanceOf(
+                        MethodArgumentNotValidException.class, result.getResolvedException()));
+    }
+
+    private ResultActions postarEco(String corpo) throws Exception {
+        return mockMvc.perform(post("/experimentos/eco")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(corpo));
     }
 
 }

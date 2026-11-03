@@ -2,6 +2,9 @@ package com.example.aluguel_carros.experimentos;
 
 import java.util.Map;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,11 +26,11 @@ public class ExperimentosController {
     }
 
     @PostMapping("/experimentos/eco")
-    public Map<String, Object> eco(@RequestBody EcoRequest entrada) {
+    public Map<String, Object> eco(@Valid @RequestBody EcoRequest entrada) {
         return Map.of("texto", entrada.texto(), "tamanho", entrada.texto().length());
     }
 
-    public record EcoRequest(String texto) {
+    public record EcoRequest(@NotBlank String texto) {
     }
 
 }
