@@ -38,6 +38,11 @@ public class ContratanteExperimentalEntity {
         this.profissao = profissao;
     }
 
+    /** Só para o experimento de atualização (dirty checking). */
+    public void alterarProfissao(String novaProfissao) {
+        this.profissao = novaProfissao;
+    }
+
     public Long getId() { return id; }
     public String getRg() { return rg; }
     public String getCpf() { return cpf; }

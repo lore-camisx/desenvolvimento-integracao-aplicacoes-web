@@ -3,6 +3,7 @@ package com.example.aluguel_carros.persistencia.experimental;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -55,6 +56,11 @@ class ContratanteExperimentalPersistenciaIT {
                 "RG-A", "00000000001", "Ana", "Rua A, 1", "Profissao A");
     }
 
+    private static ContratanteExperimentalEntity beto() {
+        return new ContratanteExperimentalEntity(
+                "RG-B", "00000000002", "Beto", "Rua B, 2", "Profissao B");
+    }
+
     @Test // CT-23-01
     void persistirAtribuiChaveGeradaEExecutaFlush() {
         ContratanteExperimentalEntity novo = ana();
@@ -80,6 +86,40 @@ class ContratanteExperimentalPersistenciaIT {
                 () -> assertEquals("Ana", lido.getNome()),
                 () -> assertEquals("Rua A, 1", lido.getEndereco()),
                 () -> assertEquals("Profissao A", lido.getProfissao()));
+    }
+
+    @Test // CT-23-03
+    void atualizarProfissaoPorDirtyCheckingChegaAoBanco() {
+        ContratanteExperimentalEntity original = repositorio.saveAndFlush(ana());
+        Long id = original.getId();
+
+        original.alterarProfissao("Profissao Nova"); // gerenciada: sem chamar save()
+        repositorio.flush();
+        entityManager.clear();
+
+        ContratanteExperimentalEntity lido = repositorio.findById(id).orElseThrow();
+        assertAll(
+                () -> assertEquals("Profissao Nova", lido.getProfissao()),
+                () -> assertEquals("RG-A", lido.getRg()),
+                () -> assertEquals("00000000001", lido.getCpf()),
+                () -> assertEquals("Ana", lido.getNome()),
+                () -> assertEquals("Rua A, 1", lido.getEndereco()));
+    }
+
+    @Test // CT-23-04
+    void excluirRemoveSomenteORegistroSelecionado() {
+        Long idAna = repositorio.saveAndFlush(ana()).getId();
+        Long idBeto = repositorio.saveAndFlush(beto()).getId();
+        assertNotEquals(idAna, idBeto);
+
+        repositorio.deleteById(idAna);
+        repositorio.flush();
+        entityManager.clear();
+
+        assertAll(
+                () -> assertTrue(repositorio.findById(idAna).isEmpty()),
+                () -> assertEquals("Beto", repositorio.findById(idBeto).orElseThrow().getNome()),
+                () -> assertEquals(1, repositorio.count()));
     }
 
     @Test // CT-23-05
