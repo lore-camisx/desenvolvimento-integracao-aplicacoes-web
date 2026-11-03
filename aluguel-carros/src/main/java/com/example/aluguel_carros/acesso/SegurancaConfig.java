@@ -9,7 +9,8 @@ import org.springframework.security.web.SecurityFilterChain;
 
 /**
  * Política provisória de acesso. Não é regra de negócio aprovada.
- * - /api/clientes/**: negado a todos até as permissões serem definidas.
+ * - /api/clientes/** e /api/laboratorio/**: negados a todos até as permissões
+ *   serem definidas (as regras são avaliadas na ordem declarada).
  * - demais caminhos: exigem autenticação.
  * httpBasic é só um mecanismo provisório; o login real ainda não existe.
  * A proteção CSRF permanece no padrão (ativa).
@@ -21,7 +22,7 @@ public class SegurancaConfig {
     SecurityFilterChain filtroDeSeguranca(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(autorizacao -> autorizacao
-                        .requestMatchers("/api/clientes/**").denyAll()
+                        .requestMatchers("/api/clientes/**", "/api/laboratorio/**").denyAll()
                         .anyRequest().authenticated())
                 .httpBasic(withDefaults());
         return http.build();
