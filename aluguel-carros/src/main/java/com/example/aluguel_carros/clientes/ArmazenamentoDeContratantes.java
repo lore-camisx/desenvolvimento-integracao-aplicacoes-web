@@ -13,4 +13,13 @@ public interface ArmazenamentoDeContratantes {
 
     /** Busca por identificador técnico; vazio se não existir. */
     Optional<Contratante> buscarPorId(long id);
+
+    /**
+     * Substitui por completo os dados do cadastro existente, mantendo o id.
+     * Devolve false, sem criar nada, se o id não existir.
+     */
+    boolean atualizar(long id, Contratante novosDados);
+
+    /** Remove o cadastro. Devolve true se existia e false se o id não existir. */
+    boolean excluir(long id);
 }

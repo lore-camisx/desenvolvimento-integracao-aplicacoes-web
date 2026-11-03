@@ -3,6 +3,7 @@ package com.example.aluguel_carros.clientes;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -62,5 +63,56 @@ class ArmazenamentoDeContratantesEmMemoriaTest {
             long id = armazenamento.cadastrar(ana());
             armazenamento.buscarPorId(id).orElseThrow();
         });
+    }
+
+    @Test // CT-21-C-01
+    void atualizarCadastroExistenteMantemOMesmoId() {
+        long id = armazenamento.cadastrar(ana());
+
+        boolean atualizado = armazenamento.atualizar(id, beto());
+
+        assertTrue(atualizado);
+        Contratante c = armazenamento.buscarPorId(id).orElseThrow();
+        assertAll(
+                () -> assertEquals("RG-B", c.getRg()),
+                () -> assertEquals("00000000002", c.getCpf()),
+                () -> assertEquals("Beto", c.getNome()),
+                () -> assertEquals("Rua B, 2", c.getEndereco()),
+                () -> assertEquals("Profissao B", c.getProfissao()));
+    }
+
+    @Test // CT-21-C-02
+    void atualizarIdInexistenteNaoCriaRegistro() {
+        long idAna = armazenamento.cadastrar(ana());
+
+        boolean atualizado = armazenamento.atualizar(999L, beto());
+
+        assertFalse(atualizado);
+        assertTrue(armazenamento.buscarPorId(999L).isEmpty());
+        assertEquals("Ana", armazenamento.buscarPorId(idAna).orElseThrow().getNome());
+    }
+
+    @Test // CT-21-C-03
+    void excluirCadastroExistenteRemoveSomenteEle() {
+        long idAna = armazenamento.cadastrar(ana());
+        long idBeto = armazenamento.cadastrar(beto());
+
+        boolean excluido = armazenamento.excluir(idAna);
+
+        assertTrue(excluido);
+        assertTrue(armazenamento.buscarPorId(idAna).isEmpty());
+        assertEquals("Beto", armazenamento.buscarPorId(idBeto).orElseThrow().getNome());
+    }
+
+    @Test // CT-21-C-04
+    void excluirIdInexistenteNaoApagaOutroCadastro() {
+        long idAna = armazenamento.cadastrar(ana());
+        long idBeto = armazenamento.cadastrar(beto());
+
+        boolean excluido = armazenamento.excluir(999L);
+
+        assertFalse(excluido);
+        assertEquals("Ana", armazenamento.buscarPorId(idAna).orElseThrow().getNome());
+        assertEquals("Beto", armazenamento.buscarPorId(idBeto).orElseThrow().getNome());
     }
 }

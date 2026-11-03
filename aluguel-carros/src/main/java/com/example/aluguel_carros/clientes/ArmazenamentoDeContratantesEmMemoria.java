@@ -25,4 +25,15 @@ public class ArmazenamentoDeContratantesEmMemoria implements ArmazenamentoDeCont
     public Optional<Contratante> buscarPorId(long id) {
         return Optional.ofNullable(registros.get(id));
     }
+
+    @Override
+    public boolean atualizar(long id, Contratante novosDados) {
+        // replace (e não put): só substitui se o id já existir, nunca cria registro.
+        return registros.replace(id, novosDados) != null;
+    }
+
+    @Override
+    public boolean excluir(long id) {
+        return registros.remove(id) != null;
+    }
 }
